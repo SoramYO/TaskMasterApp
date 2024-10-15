@@ -8,12 +8,12 @@ namespace TaskMasterAppDAL.Repository.Implement
     {
         private TaskMasterContext _context;
 
-
         public User AuthenticateUser(string value, string password)
         {
             _context = new TaskMasterContext();
-            var user = _context.Users.Include(u => u.Roles)
-                .FirstOrDefault(u => (u.Username == value || u.Email == value) && u.PasswordHash == password);
+            var user = _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefault(u => (u.UserName == value || u.Email == value) && u.PasswordHash == password);
 
             return user;
         }

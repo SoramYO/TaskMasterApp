@@ -13,6 +13,7 @@ namespace TaskMasterAppUI
     public partial class MainWindow : Window
     {
         private readonly IAuthenticateService _authenticateService;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,13 +31,13 @@ namespace TaskMasterAppUI
 
             if (user != null)
             {
-                if (user.Roles.Any(r => r.RoleName == "Admin"))
+                if (user.Role.RoleName == "Admin")
                 {
                     var dashBoard = new DashBoard();
                     dashBoard.Show();
                     Close();
                 }
-                else if (user.Roles.Any(r => r.RoleName == "User"))
+                else if (user.Role.RoleName == "User")
                 {
                     var homeWindow = new HomeWindow();
                     homeWindow.Show();
