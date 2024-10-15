@@ -1,5 +1,9 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using TaskMasterAppBLL.Service.Implement;
+using TaskMasterAppBLL.Service.Interface;
+using TaskModel = TaskMasterAppDAL.Models.Task;
 
 namespace TaskMasterAppUI.Windows.UserWindows
 {
@@ -8,6 +12,9 @@ namespace TaskMasterAppUI.Windows.UserWindows
     /// </summary>
     public partial class HomeWindow : Window
     {
+        private ITaskCategoryService _taskCategoryService = new TaskCategoryService();
+        private ITaskService _taskService = new TaskService();
+
         public HomeWindow()
         {
             InitializeComponent();
@@ -20,38 +27,70 @@ namespace TaskMasterAppUI.Windows.UserWindows
 
         }
 
-        private void NoteTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NoteTextBlock.Focus();
+            Application.Current.Shutdown();
         }
 
-        private void NoteTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void CalendarChoose_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(NoteTextBox.Text) && NoteTextBox.Text.Length > 0)
+            if (CalendarChoose.SelectedDate.HasValue)
             {
-                NoteTextBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                NoteTextBlock.Visibility = Visibility.Visible;
+                DateTime selectedDate = CalendarChoose.SelectedDate.Value;
+                SelectedDay.Text = selectedDate.Day.ToString();
+                SelectedMonth.Text = selectedDate.ToString("MMMM yyyy");
+                SelectedDayOfWeek.Text = selectedDate.ToString("dddd");
             }
         }
 
-        private void TimeTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            TimeTextBlock.Focus();
+            ShowDateNow();
+            GetCategory();
         }
 
-        private void TimeTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ShowDateNow()
         {
-            if (!string.IsNullOrEmpty(TimeTextBox.Text) && TimeTextBox.Text.Length > 0)
+            DateTime dateTimeNow = DateTime.Now;
+            SelectedDay.Text = dateTimeNow.Day.ToString();
+            SelectedMonth.Text = dateTimeNow.ToString("MMMM yyyy");
+            SelectedDayOfWeek.Text = dateTimeNow.ToString("dddd");
+        }
+        private void GetCategory()
+        {
+            CategoryComboBox.ItemsSource = null;
+            CategoryComboBox.ItemsSource = _taskCategoryService.GetCategory();
+            CategoryComboBox.SelectedValuePath = "CategoryId";
+            CategoryComboBox.DisplayMemberPath = "CategoryName";
+            CategoryComboBox.SelectedIndex = 0;
+        }
+
+
+        private void AddTask_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(TitleTextBox.Text) || string.IsNullOrEmpty(DescriptionTextBox.Text)
+                || PriorityComboBox.SelectedIndex == -1 || CategoryComboBox.SelectedIndex == -1
+                || StartTimePicker.DefaultValue == null || EndTimePicker.DefaultValue == null)
             {
-                TimeTextBlock.Visibility = Visibility.Collapsed;
+                MessageBox.Show("Please fill all fields");
+                return;
             }
-            else
+            TaskModel task = new TaskModel()
             {
-                TimeTextBlock.Visibility = Visibility.Visible;
-            }
+                Title = TitleTextBox.Text,
+                Description = DescriptionTextBox.Text,
+                IsCompleted = false,
+                DueDate = EndTimePicker.DefaultValue,
+                CreatedDate = StartTimePicker.DefaultValue,
+                Priority = PriorityComboBox.SelectedIndex,
+                CategoryId = (int)CategoryComboBox.SelectedValue,
+                UserId = 1,
+            };
+
+            _taskService.AddTask(task);
+            MessageBox.Show("Task Added Successfully");
+
         }
     }
 }

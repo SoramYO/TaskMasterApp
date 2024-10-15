@@ -16,14 +16,14 @@ namespace TaskMasterAppUI
         {
 
 
-            Forms.NotifyIcon notifyIcon = new Forms.NotifyIcon();
-            _notifyIcon.Icon = new System.Drawing.Icon("Images/logo.ico");
-            _notifyIcon.Text = "Task Master";
-            _notifyIcon.Click += NotifyIcon_Click;
-            _notifyIcon.Visible = true;
+            //Forms.NotifyIcon notifyIcon = new Forms.NotifyIcon();
+            //_notifyIcon.Icon = new System.Drawing.Icon("Images/logo.ico");
+            //_notifyIcon.Text = "Task Master";
+            //_notifyIcon.Click += NotifyIcon_Click;
+            //_notifyIcon.Visible = true;
 
-            _notifyIcon.ContextMenuStrip = new Forms.ContextMenuStrip();
-            _notifyIcon.ContextMenuStrip.Items.Add("Open", null, NotifyIcon_Click);
+            //_notifyIcon.ContextMenuStrip = new Forms.ContextMenuStrip();
+            //_notifyIcon.ContextMenuStrip.Items.Add("Open", null, NotifyIcon_Click);
 
             base.OnStartup(e);
         }
