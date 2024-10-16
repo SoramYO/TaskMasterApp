@@ -14,10 +14,12 @@ namespace TaskMasterAppUI.Windows.UserWindows
     {
         private ITaskCategoryService _taskCategoryService = new TaskCategoryService();
         private ITaskService _taskService = new TaskService();
+        private HomeViewModel _viewModel = new HomeViewModel(new TaskService());
 
         public HomeWindow()
         {
             InitializeComponent();
+            DataContext = _viewModel;
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -48,6 +50,7 @@ namespace TaskMasterAppUI.Windows.UserWindows
         {
             ShowDateNow();
             GetCategory();
+            _viewModel.LoadTasks();
         }
 
         private void ShowDateNow()
@@ -69,11 +72,24 @@ namespace TaskMasterAppUI.Windows.UserWindows
 
         private void AddTask_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(TitleTextBox.Text) || string.IsNullOrEmpty(DescriptionTextBox.Text)
-                || PriorityComboBox.SelectedIndex == -1 || CategoryComboBox.SelectedIndex == -1
-                || StartTimePicker.DefaultValue == null || EndTimePicker.DefaultValue == null)
+            if (string.IsNullOrEmpty(TitleTextBox.Text))
             {
-                MessageBox.Show("Please fill all fields");
+                MessageBox.Show("Vui long dien title");
+
+            }
+            if (string.IsNullOrEmpty(DescriptionTextBox.Text))
+            {
+                MessageBox.Show("Vui long dien description");
+
+            }
+            if (CategoryComboBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Vui long chon muc");
+            }
+
+            if (EndTimePicker.Value < StartTimePicker.Value)
+            {
+                MessageBox.Show("End time must be greater than start time");
                 return;
             }
             TaskModel task = new TaskModel()
@@ -81,15 +97,15 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 Title = TitleTextBox.Text,
                 Description = DescriptionTextBox.Text,
                 IsCompleted = false,
-                DueDate = EndTimePicker.DefaultValue,
-                CreatedDate = StartTimePicker.DefaultValue,
-                Priority = PriorityComboBox.SelectedIndex,
+                DueDate = EndTimePicker.Value,
+                CreatedDate = StartTimePicker.Value,
                 CategoryId = (int)CategoryComboBox.SelectedValue,
-                UserId = 1,
+                UserId = Application.Current.Properties["UserId"] as int?
             };
 
             _taskService.AddTask(task);
             MessageBox.Show("Task Added Successfully");
+            _viewModel.LoadTasks();
 
         }
     }

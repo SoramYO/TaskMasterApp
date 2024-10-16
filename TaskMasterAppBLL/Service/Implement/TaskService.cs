@@ -10,7 +10,7 @@ namespace TaskMasterAppBLL.Service.Implement
 
         public void AddTask(TaskModel task)
         {
-            _repository.Add(new TaskModel());
+            _repository.Add(task);
         }
 
         public void DeleteTask(TaskModel task)

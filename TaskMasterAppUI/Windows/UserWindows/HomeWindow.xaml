@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:uc="clr-namespace:TaskMasterAppUI.Windows.UserControls"
+    d:DataContext="{d:DesignInstance Type=local:HomeViewModel}"
     Title="HomeWindow"
     Width="900"
     Height="590"
@@ -18,6 +19,9 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Resources>
+        <local:TimeRangeConverter x:Key="TimeRangeConverter" />
+    </Window.Resources>
     <Grid>
         <!--  Grid Background  -->
         <Grid>
@@ -164,51 +168,40 @@
                                 Margin="0,12,0,11"
                                 Background="#C14269" />
 
-                            <!--  Time Picker  -->
+                            <!--  Start Time Picker  -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <!--  Icon for Time Picker  -->
                                 <fa:ImageAwesome
-                                    Grid.Column="0"
                                     Width="15"
                                     Height="15"
-                                    VerticalAlignment="Center"
                                     Foreground="#EBA5BB"
                                     Icon="ClockOutline" />
-
-                                <!--  Start Time Picker  -->
+                                <Label
+                                    Content="Start Time"
+                                    Foreground="#EBA5BB"
+                                    FontSize="12"
+                                    VerticalAlignment="Center" />
                                 <toolkit:TimePicker
+                                    Value="{Binding StartTimePicker}"
                                     Name="StartTimePicker"
                                     Grid.Column="1"
                                     Width="100"
-                                    Margin="10,0,10,0"
-                                    VerticalAlignment="Center"
-                                    Format="Custom"
-                                    FormatString="HH:mm" />
-
-                                <!--  End Time Picker  -->
-                                <toolkit:TimePicker
-                                    Name="EndTimePicker"
-                                    Grid.Column="2"
-                                    Width="100"
+                                    Margin="10,0,0,0"
                                     VerticalAlignment="Center"
                                     Format="Custom"
                                     FormatString="HH:mm" />
                             </Grid>
-
-
 
                             <Separator
                                 Height="0.8"
                                 Margin="0,12,0,11"
                                 Background="#C14269" />
 
-                            <!--  Priority  -->
+                            <!--  End Time Picker  -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
@@ -219,17 +212,20 @@
                                     Width="15"
                                     Height="15"
                                     Foreground="#EBA5BB"
-                                    Icon="Flag" />
-                                <ComboBox
-                                    Name="PriorityComboBox"
+                                    Icon="ClockOutline" />
+                                <Label  Content="End Time"
+ Foreground="#EBA5BB"
+ FontSize="12"
+ VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="25,0,197,0" />
+                                <toolkit:TimePicker
+                                    Value="{Binding EndTimePicker}"
+                                    Name="EndTimePicker"
                                     Grid.Column="1"
+                                    Width="100"
                                     Margin="10,0,0,0"
-                                    SelectedIndex="1"
-                                    Style="{StaticResource comboBoxStyle}">
-                                    <ComboBoxItem Content="Low" Tag="1" />
-                                    <ComboBoxItem Content="Medium" Tag="2" />
-                                    <ComboBoxItem Content="High" Tag="3" />
-                                </ComboBox>
+                                    VerticalAlignment="Center"
+                                    Format="Custom"
+                                    FormatString="HH:mm" />
                             </Grid>
 
                             <Separator
@@ -286,25 +282,20 @@
                 </Border>
 
                 <!--  Motes  -->
-                <uc:Item
-                    Title="Sleep"
-                    Icon="CheckCircle"
-                    IconBell="BellSlash"
-                    Time="10:17 - 02:10"
-                    Color="#eba5bb" />
-                <uc:Item
-                    Title="Eat"
-                    Icon="CheckCircle"
-                    IconBell="BellSlash"
-                    Time="10:17 - 02:10"
-                    Color="#eba5bb" />
-                <uc:Item
-                    Title="Code"
-                    Icon="CheckCircle"
-                    IconBell="BellSlash"
-                    Time="10:17 - 02:10"
-                    Color="#eba5bb" />
-
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Tasks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <uc:Item
+                                    Title="{Binding Title}"
+                                    Icon="CheckCircle"
+                                    IconBell="BellSlash"
+                                    Time="{Binding DueDate, StringFormat='{}{0:HH:mm} - {1:HH:mm}', Converter={StaticResource TimeRangeConverter}}"
+                                    Color="#eba5bb" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </StackPanel>
         </Grid>
     </Grid>

@@ -9,6 +9,8 @@ namespace TaskMasterAppBLL.Service.Implement
     {
         private IAuthenticateRepository _authenticateRepository;
 
+        private Repository<User> _userRepository = new Repository<User>();
+
         public AuthenticateService()
         {
             _authenticateRepository = new AuthenticateRepository();
@@ -19,6 +21,10 @@ namespace TaskMasterAppBLL.Service.Implement
             return user;
         }
 
-
+        public int GetEmployeeId(int userId)
+        {
+            var user = _userRepository.GetById(userId);
+            return user.UserId;
+        }
     }
 }

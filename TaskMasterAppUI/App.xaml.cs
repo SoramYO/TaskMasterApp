@@ -37,6 +37,7 @@ namespace TaskMasterAppUI
             _notifyIcon.Dispose();
             base.OnExit(e);
         }
+
     }
 
 }

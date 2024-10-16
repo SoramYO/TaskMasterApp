@@ -31,6 +31,7 @@ namespace TaskMasterAppUI
 
             if (user != null)
             {
+                Application.Current.Properties["UserId"] = _authenticateService.GetEmployeeId(user.UserId);
                 if (user.Role.RoleName == "Admin")
                 {
                     var dashBoard = new DashBoard();
