@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using TaskMasterAppBLL.Service.Interface;
@@ -8,42 +9,43 @@ namespace TaskMasterAppUI.Windows.UserWindows
 {
     public class HomeViewModel : INotifyPropertyChanged
     {
+
+        private readonly ITaskService _taskService;
+        public HomeViewModel(ITaskService taskService)
+        {
+            _taskService = taskService;
+            LoadTasks();
+            StartDateTime = DateTime.Now;
+            EndDateTime = DateTime.Now.AddHours(1);
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
         {
-            if (!(object.Equals(field, newValue)))
+            if (!object.Equals(field, newValue))
             {
-                field = (newValue);
+                field = newValue;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
                 return true;
             }
 
             return false;
         }
-        private DateTime currentDateTime = DateTime.Now;
-        public DateTime StartTimePicker
+
+        private DateTime _startDateTime;
+        public DateTime StartDateTime
         {
-            get
-            {
-                return currentDateTime;
-            }
-            set
-            {
-                currentDateTime = value;
-            }
+            get => _startDateTime;
+            set => SetProperty(ref _startDateTime, value);
         }
-        private DateTime endDateTime = DateTime.Now;
-        public DateTime EndTimePicker
+
+        private DateTime _endDateTime;
+        public DateTime EndDateTime
         {
-            get
-            {
-                return endDateTime;
-            }
-            set
-            {
-                endDateTime = value;
-            }
+            get => _endDateTime;
+            set => SetProperty(ref _endDateTime, value);
         }
+
+
         private ObservableCollection<TaskModel> _tasks;
         public ObservableCollection<TaskModel> Tasks
         {
@@ -51,17 +53,27 @@ namespace TaskMasterAppUI.Windows.UserWindows
             set => SetProperty(ref _tasks, value);
         }
 
-        private readonly ITaskService _taskService;
 
-        public HomeViewModel(ITaskService taskService)
-        {
-            _taskService = taskService;
-            LoadTasks();
-        }
+
 
         public void LoadTasks()
         {
             Tasks = new ObservableCollection<TaskModel>(_taskService.GetTasks());
         }
+
+        public void LoadTaskByDay(DateTime date)
+        {
+            if (Tasks == null)
+            {
+                Tasks = new ObservableCollection<TaskModel>();
+            }
+            else
+            {
+                Tasks.Clear();
+            }
+            Tasks = new ObservableCollection<TaskModel>(_taskService.GetTaskByDay(date));
+
+        }
+
     }
 }

@@ -8,11 +8,10 @@ public partial class TaskMasterContext : DbContext
     public TaskMasterContext()
     {
     }
-
-    public TaskMasterContext(DbContextOptions<TaskMasterContext> options)
-        : base(options)
+    public TaskMasterContext(DbContextOptions<TaskMasterContext> options) : base(options)
     {
     }
+
 
     public virtual DbSet<Category> Categories { get; set; }
 
@@ -59,6 +58,7 @@ public partial class TaskMasterContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.DueDate).HasColumnType("datetime");
             entity.Property(e => e.IsCompleted).HasDefaultValue(false);
+            entity.Property(e => e.Notification).HasDefaultValue(false);
             entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.Category).WithMany(p => p.Tasks)

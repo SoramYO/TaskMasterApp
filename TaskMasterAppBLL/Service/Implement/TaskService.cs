@@ -23,6 +23,11 @@ namespace TaskMasterAppBLL.Service.Implement
             return _repository.GetById(id);
         }
 
+        public List<TaskModel> GetTaskByDay(DateTime date)
+        {
+            return _repository.GetAll().Where(x => x.CreatedDate?.Date == date.Date).ToList();
+        }
+
         public List<TaskModel> GetTasks()
         {
             return _repository.GetAll();

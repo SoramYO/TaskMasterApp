@@ -3,8 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TaskMasterAppBLL.Service.Implement;
 using TaskMasterAppBLL.Service.Interface;
+using TaskMasterAppUI.Windows.UserControls;
 using TaskModel = TaskMasterAppDAL.Models.Task;
-
+using System.Collections.ObjectModel;
 namespace TaskMasterAppUI.Windows.UserWindows
 {
     /// <summary>
@@ -19,7 +20,7 @@ namespace TaskMasterAppUI.Windows.UserWindows
         public HomeWindow()
         {
             InitializeComponent();
-            DataContext = _viewModel;
+            DataContext = new HomeViewModel(new TaskService());
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -43,10 +44,20 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 SelectedDay.Text = selectedDate.Day.ToString();
                 SelectedMonth.Text = selectedDate.ToString("MMMM yyyy");
                 SelectedDayOfWeek.Text = selectedDate.ToString("dddd");
+
+                _viewModel.LoadTaskByDay(selectedDate);
+                LoadTaskByDate();
             }
         }
 
+
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadData();
+        }
+
+        public void LoadData()
         {
             ShowDateNow();
             GetCategory();
@@ -87,7 +98,7 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 MessageBox.Show("Vui long chon muc");
             }
 
-            if (EndTimePicker.Value < StartTimePicker.Value)
+            if (EndDateTimePicker.Value < StartDateTimePicker.Value)
             {
                 MessageBox.Show("End time must be greater than start time");
                 return;
@@ -96,9 +107,8 @@ namespace TaskMasterAppUI.Windows.UserWindows
             {
                 Title = TitleTextBox.Text,
                 Description = DescriptionTextBox.Text,
-                IsCompleted = false,
-                DueDate = EndTimePicker.Value,
-                CreatedDate = StartTimePicker.Value,
+                DueDate = EndDateTimePicker.Value,
+                CreatedDate = StartDateTimePicker.Value,
                 CategoryId = (int)CategoryComboBox.SelectedValue,
                 UserId = Application.Current.Properties["UserId"] as int?
             };
@@ -108,5 +118,23 @@ namespace TaskMasterAppUI.Windows.UserWindows
             _viewModel.LoadTasks();
 
         }
+
+        private void AddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var addCategoryModal = new AddCategoryModal();
+            addCategoryModal.CategoryAdded += () =>
+              {
+                  LoadData();
+              };
+            AddCategoryPopup.Child = addCategoryModal;
+            AddCategoryPopup.IsOpen = true;
+        }
+
+        private void LoadTaskByDate()
+        {
+            TaskItemSouce.ItemsSource = null;
+            TaskItemSouce.ItemsSource = _viewModel.Tasks;
+        }
+
     }
 }

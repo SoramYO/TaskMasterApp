@@ -21,7 +21,9 @@
     mc:Ignorable="d">
     <Window.Resources>
         <local:TimeRangeConverter x:Key="TimeRangeConverter" />
+        <local:IsCompletedToIconConverter x:Key="IsCompletedToIconConverter" />
     </Window.Resources>
+
     <Grid>
         <!--  Grid Background  -->
         <Grid>
@@ -180,20 +182,23 @@
                                     Height="15"
                                     Foreground="#EBA5BB"
                                     Icon="ClockOutline" />
-                                <Label
-                                    Content="Start Time"
-                                    Foreground="#EBA5BB"
-                                    FontSize="12"
-                                    VerticalAlignment="Center" />
-                                <toolkit:TimePicker
-                                    Value="{Binding StartTimePicker}"
-                                    Name="StartTimePicker"
-                                    Grid.Column="1"
-                                    Width="100"
-                                    Margin="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Format="Custom"
-                                    FormatString="HH:mm" />
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0,0,0,0">
+
+                                    <Label
+                                        Content="Start Time"
+                                        Foreground="#EBA5BB"
+                                        FontSize="12"
+                                        Margin="5,0,0,0"
+                                        />
+
+                                    <toolkit:DateTimePicker
+                                        x:Name="StartDateTimePicker"
+                                        Value="{Binding StartDateTime}"
+                                        Format="Custom"
+                                        FormatString="yyyy/MM/dd HH:mm"
+                                        Width="200"
+                                        />
+                                </StackPanel>
                             </Grid>
 
                             <Separator
@@ -205,7 +210,7 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
                                 <fa:ImageAwesome
@@ -213,19 +218,22 @@
                                     Height="15"
                                     Foreground="#EBA5BB"
                                     Icon="ClockOutline" />
-                                <Label  Content="End Time"
- Foreground="#EBA5BB"
- FontSize="12"
- VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="25,0,197,0" />
-                                <toolkit:TimePicker
-                                    Value="{Binding EndTimePicker}"
-                                    Name="EndTimePicker"
-                                    Grid.Column="1"
-                                    Width="100"
-                                    Margin="10,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Format="Custom"
-                                    FormatString="HH:mm" />
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0,0,0,0">
+                                    <Label  Content="End Time"
+                                           Foreground="#EBA5BB"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"
+                                           Margin="5,0,6,0"
+                                           Grid.Column="1" />
+
+                                    <toolkit:DateTimePicker
+                                        x:Name="EndDateTimePicker"
+                                        Value="{Binding EndDateTime}"
+                                        Format="Custom"
+                                        FormatString="yyyy/MM/dd HH:mm"
+                                        Width="200"
+                                        Grid.ColumnSpan="2" />
+                                </StackPanel>
                             </Grid>
 
                             <Separator
@@ -253,16 +261,21 @@
                                     DisplayMemberPath="CategoryName"
                                     Style="{StaticResource comboBoxStyle}" />
 
-                                <Button
-                                    Grid.Column="2"
-                                    Margin="5,0,0,0"
-                                    Style="{StaticResource addCategoryButtonStyle}">
+                                <Button x:Name="AddCategory"
+                                        Grid.Column="2"
+                                        Margin="5,0,0,0"
+                                        Style="{StaticResource addCategoryButtonStyle}" Click="AddCategory_Click">
                                     <fa:ImageAwesome
                                         Width="18"
                                         Height="18"
                                         Foreground="White"
                                         Icon="PlusCircle" />
                                 </Button>
+                                <Popup x:Name="AddCategoryPopup" AllowsTransparency="True" Placement="Mouse" StaysOpen="False">
+                                    <Border Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Padding="10">
+                                        <uc:AddCategoryModal />
+                                    </Border>
+                                </Popup>
                             </Grid>
                         </StackPanel>
 
@@ -282,20 +295,22 @@
                 </Border>
 
                 <!--  Motes  -->
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Tasks}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <uc:Item
-                                    Title="{Binding Title}"
-                                    Icon="CheckCircle"
-                                    IconBell="BellSlash"
-                                    Time="{Binding DueDate, StringFormat='{}{0:HH:mm} - {1:HH:mm}', Converter={StaticResource TimeRangeConverter}}"
-                                    Color="#eba5bb" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                <StackPanel Height="172">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Height="172">
+                        <ItemsControl x:Name="TaskItemSouce" ItemsSource="{Binding Tasks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:Item
+                                        Title="{Binding Title}"
+                                        Icon="{Binding IsCompleted, Converter={StaticResource IsCompletedToIconConverter}}"
+                                        IconBell="Bell"
+                                        Time="{Binding Path=DueDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
+                                        Color="#eba5bb" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>

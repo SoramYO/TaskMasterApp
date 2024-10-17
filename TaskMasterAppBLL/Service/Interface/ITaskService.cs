@@ -6,6 +6,8 @@ namespace TaskMasterAppBLL.Service.Interface
         List<TaskModel> GetTasks();
         TaskModel GetTask(int id);
 
+        List<TaskModel> GetTaskByDay(DateTime date);
+
         void AddTask(TaskModel task);
 
         void UpdateTask(TaskModel task);

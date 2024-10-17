@@ -13,6 +13,8 @@ public partial class Task
 
     public bool? IsCompleted { get; set; }
 
+    public bool? Notification { get; set; }
+
     public DateTime? DueDate { get; set; }
 
     public DateTime? CreatedDate { get; set; }

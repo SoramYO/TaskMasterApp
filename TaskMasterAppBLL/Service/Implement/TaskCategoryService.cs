@@ -11,7 +11,7 @@ namespace TaskMasterAppBLL.Service.Implement
         private Repository<Category> _repository = new Repository<Category>();
         public void AddCategory(Category category)
         {
-            _repository.Add(new Category());
+            _repository.Add(category);
         }
 
         public void DeleteCategory(Category category)
