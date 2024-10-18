@@ -24,13 +24,21 @@ namespace TaskMasterAppUI.Windows.UserControls
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(Item));
 
 
-        public string Time
+        public string CreateTime
         {
-            get { return (string)GetValue(TimeProperty); }
-            set { SetValue(TimeProperty, value); }
+            get { return (string)GetValue(CreateTimeProperty); }
+            set { SetValue(CreateTimeProperty, value); }
         }
 
-        public static readonly DependencyProperty TimeProperty = DependencyProperty.Register("Time", typeof(string), typeof(Item));
+        public static readonly DependencyProperty CreateTimeProperty = DependencyProperty.Register("CreateTime", typeof(string), typeof(Item));
+
+        public string DueTime
+        {
+            get { return (string)GetValue(DueTimeProperty); }
+            set { SetValue(DueTimeProperty, value); }
+        }
+
+        public static readonly DependencyProperty DueTimeProperty = DependencyProperty.Register("DueTime", typeof(string), typeof(Item));
 
 
         public SolidColorBrush Color

@@ -13,5 +13,7 @@ namespace TaskMasterAppBLL.Service.Interface
         void UpdateTask(TaskModel task);
 
         void DeleteTask(TaskModel task);
+        void CheckTask(TaskModel task);
+        void MuteTask(TaskModel task);
     }
 }

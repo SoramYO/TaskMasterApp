@@ -11,8 +11,8 @@
     <Grid Margin="30,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
+            <!--<ColumnDefinition Width="auto" />-->
         </Grid.ColumnDefinitions>
 
         <fa:ImageAwesome
@@ -41,57 +41,63 @@
                     Margin="8,0,0,0"
                     FontSize="12"
                     Foreground="{Binding Path=Color, ElementName=item}"
-                    Text="{Binding Path=Time, ElementName=item}" />
+                    Text="{Binding Path=CreateTime, ElementName=item}" />
+                <TextBlock Text="-"/>
+                <TextBlock
+                    Margin="8,0,0,0"
+                    FontSize="12"
+                    Foreground="{Binding Path=Color, ElementName=item}"
+                    Text="{Binding Path=DueTime, ElementName=item}" />
             </StackPanel>
         </StackPanel>
 
-        <ToggleButton Name="MenuButton" Grid.Column="2">
-            <ToggleButton.Template>
-                <ControlTemplate TargetType="ToggleButton">
-                    <fa:ImageAwesome
-                        Width="16"
-                        Height="16"
-                        Foreground="#f1f1f1"
-                        Icon="EllipsisV">
-                        <fa:ImageAwesome.Style>
-                            <Style TargetType="fa:ImageAwesome">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="RenderTransform">
-                                            <Setter.Value>
-                                                <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </fa:ImageAwesome.Style>
-                    </fa:ImageAwesome>
-                </ControlTemplate>
-            </ToggleButton.Template>
+        <!--<ToggleButton Name="MenuButton" Grid.Column="2">
+        <ToggleButton.Template>
+        <ControlTemplate TargetType="ToggleButton">
+        <fa:ImageAwesome
+        Width="16"
+        Height="16"
+        Foreground="#f1f1f1"
+        Icon="EllipsisV">
+        <fa:ImageAwesome.Style>
+        <Style TargetType="fa:ImageAwesome">
+        <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="RenderTransform">
+        <Setter.Value>
+        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+        </Setter.Value>
+        </Setter>
+        </Trigger>
+        </Style.Triggers>
+        </Style>
+        </fa:ImageAwesome.Style>
+        </fa:ImageAwesome>
+        </ControlTemplate>
+        </ToggleButton.Template>
         </ToggleButton>
 
         <Popup
-            AllowsTransparency="True"
-            HorizontalOffset="15"
-            IsOpen="{Binding IsChecked, ElementName=MenuButton}"
-            Placement="Left"
-            PlacementTarget="{Binding ElementName=MenuButton}"
-            StaysOpen="False"
-            VerticalOffset="30">
-            <Border
-                Padding="0,4"
-                Background="White"
-                CornerRadius="5">
-                <StackPanel>
+        AllowsTransparency="True"
+        HorizontalOffset="15"
+        IsOpen="{Binding IsChecked, ElementName=MenuButton}"
+        Placement="Left"
+        PlacementTarget="{Binding ElementName=MenuButton}"
+        StaysOpen="False"
+        VerticalOffset="30">
+        <Border
+        Padding="0,4"
+        Background="White"
+        CornerRadius="5">
+        <StackPanel>
 
-                    <local:MenuButton Caption="Check" Icon="Check" />
-                    <local:MenuButton Caption="Mute" Icon="BellSlash" />
-                    <local:MenuButton Caption="Edit" Icon="Pencil" />
-                    <local:MenuButton Caption="Delete" Icon="Trash" />
+        <local:MenuButton Caption="Check" Icon="Check" />
+        <local:MenuButton Caption="Mute" Icon="BellSlash" />
+        <local:MenuButton Caption="Edit" Icon="Pencil" />
+        <local:MenuButton Caption="Delete" Icon="Trash" />
 
-                </StackPanel>
-            </Border>
-        </Popup>
+        </StackPanel>
+        </Border>
+        </Popup>-->
     </Grid>
 </UserControl>

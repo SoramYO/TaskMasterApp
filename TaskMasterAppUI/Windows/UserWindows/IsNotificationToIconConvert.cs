@@ -5,25 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-
 namespace TaskMasterAppUI.Windows.UserWindows
 {
-    public class IsCompletedToIconConverter : IValueConverter
+    public class IsNotificationToIconConvert : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool isCompleted)
+            if (value is bool Notification)
             {
-                if (isCompleted)
+                if (Notification)
                 {
-                    return "CheckCircle";
+                    return "Bell";
                 }
                 else
                 {
-                    return "Circle";
+                    return "BellSlash";
                 }
             }
-            return "Circle";
+            return "Bell";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -31,4 +30,5 @@ namespace TaskMasterAppUI.Windows.UserWindows
             throw new NotImplementedException();
         }
     }
+
 }

@@ -37,5 +37,15 @@ namespace TaskMasterAppBLL.Service.Implement
         {
             _repository.Update(task);
         }
+        public void CheckTask(TaskModel task)
+        {
+            task.IsCompleted = !task.IsCompleted;
+            _repository.Update(task);
+        }
+        public void MuteTask(TaskModel task)
+        {
+            task.Notification = !task.Notification;
+            _repository.Update(task);
+        }
     }
 }

@@ -21,6 +21,7 @@
     <Window.Resources>
         <local:TimeRangeConverter x:Key="TimeRangeConverter" />
         <local:IsCompletedToIconConverter x:Key="IsCompletedToIconConverter" />
+        <local:IsNotificationToIconConvert x:Key="IsNotificationToIconConvert" />
     </Window.Resources>
 
     <Grid>
@@ -145,8 +146,9 @@
                                     <uc:Item
                                         Title="{Binding Title}"
                                         Icon="{Binding IsCompleted, Converter={StaticResource IsCompletedToIconConverter}}"
-                                        IconBell="Bell"
-                                        Time="{Binding Path=DueDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
+                                        IconBell="{Binding Notification, Converter={StaticResource IsNotificationToIconConvert}}"
+                                        CreateTime="{Binding Path=CreatedDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
+                                        DueTime="{Binding Path=DueDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
                                         Color="#eba5bb" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>

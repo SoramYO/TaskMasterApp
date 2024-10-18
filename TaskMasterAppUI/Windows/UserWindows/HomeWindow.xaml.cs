@@ -121,13 +121,9 @@ namespace TaskMasterAppUI.Windows.UserWindows
 
             if (selectedTask != null)
             {
-                // Mở cửa sổ chi tiết task
                 TaskDetailWindow taskDetailWindow = new TaskDetailWindow(selectedTask);
-
-                // Set dữ liệu cho TaskDetailWindow (giả sử TaskDetailWindow có property để nhận dữ liệu)
-
-                // Hiển thị TaskDetailWindow
                 taskDetailWindow.ShowDialog();
+                LoadData();
             }
         }
 

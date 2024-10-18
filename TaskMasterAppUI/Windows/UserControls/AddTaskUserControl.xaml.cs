@@ -17,6 +17,8 @@ namespace TaskMasterAppUI.Windows.UserControls
         {
             InitializeComponent();
             LoadCategories();
+            StartDateTimePicker.Value = DateTime.Now;
+            EndDateTimePicker.Value = DateTime.Now.AddHours(1);
         }
 
         private void AddTask_Click(object sender, RoutedEventArgs e)
