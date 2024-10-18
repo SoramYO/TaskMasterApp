@@ -1,11 +1,10 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TaskMasterAppBLL.Service.Implement;
 using TaskMasterAppBLL.Service.Interface;
-using TaskMasterAppUI.Windows.UserControls;
 using TaskModel = TaskMasterAppDAL.Models.Task;
-using System.Collections.ObjectModel;
 namespace TaskMasterAppUI.Windows.UserWindows
 {
     /// <summary>
@@ -15,14 +14,22 @@ namespace TaskMasterAppUI.Windows.UserWindows
     {
         private ITaskCategoryService _taskCategoryService = new TaskCategoryService();
         private ITaskService _taskService = new TaskService();
-        private HomeViewModel _viewModel = new HomeViewModel(new TaskService());
-
+        public ObservableCollection<TaskModel> Tasks { get; set; }
+        public bool IsAddTaskPopupOpen { get; set; }
         public HomeWindow()
         {
             InitializeComponent();
-            DataContext = new HomeViewModel(new TaskService());
-        }
 
+            Tasks = new ObservableCollection<TaskModel>();
+            TaskListBox.ItemsSource = Tasks;
+            IsAddTaskPopupOpen = false;
+        }
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Toggle the visibility of the Popup
+            AddTaskPopup.IsOpen = !AddTaskPopup.IsOpen;
+            LoadData();
+        }
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -45,7 +52,7 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 SelectedMonth.Text = selectedDate.ToString("MMMM yyyy");
                 SelectedDayOfWeek.Text = selectedDate.ToString("dddd");
 
-                _viewModel.LoadTaskByDay(selectedDate);
+                LoadTasksByDay(selectedDate);
                 LoadTaskByDate();
             }
         }
@@ -60,8 +67,7 @@ namespace TaskMasterAppUI.Windows.UserWindows
         public void LoadData()
         {
             ShowDateNow();
-            GetCategory();
-            _viewModel.LoadTasks();
+            LoadTasks();
         }
 
         private void ShowDateNow()
@@ -71,70 +77,60 @@ namespace TaskMasterAppUI.Windows.UserWindows
             SelectedMonth.Text = dateTimeNow.ToString("MMMM yyyy");
             SelectedDayOfWeek.Text = dateTimeNow.ToString("dddd");
         }
-        private void GetCategory()
+
+        private void LoadTasks()
         {
-            CategoryComboBox.ItemsSource = null;
-            CategoryComboBox.ItemsSource = _taskCategoryService.GetCategory();
-            CategoryComboBox.SelectedValuePath = "CategoryId";
-            CategoryComboBox.DisplayMemberPath = "CategoryName";
-            CategoryComboBox.SelectedIndex = 0;
+            Tasks.Clear();
+            var taskList = _taskService.GetTasks();
+            foreach (var task in taskList)
+            {
+                Tasks.Add(task);
+            }
+        }
+        private void LoadTasksByDay(DateTime date)
+        {
+            Tasks.Clear();
+            var tasksByDate = _taskService.GetTaskByDay(date);
+            foreach (var task in tasksByDate)
+            {
+                Tasks.Add(task);
+            }
         }
 
 
-        private void AddTask_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(TitleTextBox.Text))
-            {
-                MessageBox.Show("Vui long dien title");
 
-            }
-            if (string.IsNullOrEmpty(DescriptionTextBox.Text))
-            {
-                MessageBox.Show("Vui long dien description");
-
-            }
-            if (CategoryComboBox.SelectedIndex == -1)
-            {
-                MessageBox.Show("Vui long chon muc");
-            }
-
-            if (EndDateTimePicker.Value < StartDateTimePicker.Value)
-            {
-                MessageBox.Show("End time must be greater than start time");
-                return;
-            }
-            TaskModel task = new TaskModel()
-            {
-                Title = TitleTextBox.Text,
-                Description = DescriptionTextBox.Text,
-                DueDate = EndDateTimePicker.Value,
-                CreatedDate = StartDateTimePicker.Value,
-                CategoryId = (int)CategoryComboBox.SelectedValue,
-                UserId = Application.Current.Properties["UserId"] as int?
-            };
-
-            _taskService.AddTask(task);
-            MessageBox.Show("Task Added Successfully");
-            _viewModel.LoadTasks();
-
-        }
-
-        private void AddCategory_Click(object sender, RoutedEventArgs e)
-        {
-            var addCategoryModal = new AddCategoryModal();
-            addCategoryModal.CategoryAdded += () =>
-              {
-                  LoadData();
-              };
-            AddCategoryPopup.Child = addCategoryModal;
-            AddCategoryPopup.IsOpen = true;
-        }
 
         private void LoadTaskByDate()
         {
-            TaskItemSouce.ItemsSource = null;
-            TaskItemSouce.ItemsSource = _viewModel.Tasks;
+            TaskListBox.ItemsSource = null;
+            TaskListBox.ItemsSource = Tasks;
         }
+        private void TaskItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TaskModel selectedTask = (sender as FrameworkElement)?.DataContext as TaskModel;
+            if (selectedTask != null)
+            {
+                TaskDetailWindow taskDetailWindow = new TaskDetailWindow(selectedTask);
+                taskDetailWindow.ShowDialog();
+            }
+        }
+        private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Lấy item được chọn
+            var selectedTask = TaskListBox.SelectedItem as TaskModel;
+
+            if (selectedTask != null)
+            {
+                // Mở cửa sổ chi tiết task
+                TaskDetailWindow taskDetailWindow = new TaskDetailWindow(selectedTask);
+
+                // Set dữ liệu cho TaskDetailWindow (giả sử TaskDetailWindow có property để nhận dữ liệu)
+
+                // Hiển thị TaskDetailWindow
+                taskDetailWindow.ShowDialog();
+            }
+        }
+
 
     }
 }

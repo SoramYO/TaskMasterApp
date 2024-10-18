@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:uc="clr-namespace:TaskMasterAppUI.Windows.UserControls"
-    d:DataContext="{d:DesignInstance Type=local:HomeViewModel}"
     Title="HomeWindow"
     Width="900"
     Height="590"
@@ -105,200 +104,43 @@
                     Text="5 tasks- 2 dates left" />
 
                 <!--  Add Notes  -->
-                <Border
-                    Width="355"
-                    Margin="0,30,0,20"
-                    Padding="17,15,5,15"
-                    HorizontalAlignment="Center"
-                    Background="#CD5278"
-                    CornerRadius="10">
+                <Button
+                    x:Name="AddTaskButton"
+                    Width="100"
+                    Height="40"
+                    Margin="20"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="AddTaskButton_Click"
+                    Content="Add Task"
+                    Style="{Binding ButtonStyle}" />
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <!--  Title  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <fa:ImageAwesome
-                                    Width="15"
-                                    Height="15"
-                                    Foreground="#EBA5BB"
-                                    Icon="Header" />
-                                <TextBox
-                                    Name="TitleTextBox"
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    Style="{StaticResource textBox}"
-                                    Text="Enter Task Title" />
-                            </Grid>
-
-                            <Separator
-                                Height="0.8"
-                                Margin="0,12,0,11"
-                                Background="#C14269" />
-
-                            <!--  Description  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <fa:ImageAwesome
-                                    Width="15"
-                                    Height="15"
-                                    Foreground="#EBA5BB"
-                                    Icon="Pencil" />
-                                <TextBox
-                                    Name="DescriptionTextBox"
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    Style="{StaticResource textBox}"
-                                    Text="Enter Description (optional)" />
-                            </Grid>
-
-                            <Separator
-                                Height="0.8"
-                                Margin="0,12,0,11"
-                                Background="#C14269" />
-
-                            <!--  Start Time Picker  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <fa:ImageAwesome
-                                    Width="15"
-                                    Height="15"
-                                    Foreground="#EBA5BB"
-                                    Icon="ClockOutline" />
-                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0,0,0,0">
-
-                                    <Label
-                                        Content="Start Time"
-                                        Foreground="#EBA5BB"
-                                        FontSize="12"
-                                        Margin="5,0,0,0"
-                                        />
-
-                                    <toolkit:DateTimePicker
-                                        x:Name="StartDateTimePicker"
-                                        Value="{Binding StartDateTime}"
-                                        Format="Custom"
-                                        FormatString="yyyy/MM/dd HH:mm"
-                                        Width="200"
-                                        />
-                                </StackPanel>
-                            </Grid>
-
-                            <Separator
-                                Height="0.8"
-                                Margin="0,12,0,11"
-                                Background="#C14269" />
-
-                            <!--  End Time Picker  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
-                                <fa:ImageAwesome
-                                    Width="15"
-                                    Height="15"
-                                    Foreground="#EBA5BB"
-                                    Icon="ClockOutline" />
-                                <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="0,0,0,0">
-                                    <Label  Content="End Time"
-                                           Foreground="#EBA5BB"
-                                           FontSize="12"
-                                           VerticalAlignment="Center"
-                                           Margin="5,0,6,0"
-                                           Grid.Column="1" />
-
-                                    <toolkit:DateTimePicker
-                                        x:Name="EndDateTimePicker"
-                                        Value="{Binding EndDateTime}"
-                                        Format="Custom"
-                                        FormatString="yyyy/MM/dd HH:mm"
-                                        Width="200"
-                                        Grid.ColumnSpan="2" />
-                                </StackPanel>
-                            </Grid>
-
-                            <Separator
-                                Height="0.8"
-                                Margin="0,12,0,11"
-                                Background="#C14269" />
-
-                            <!--  Category  -->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <fa:ImageAwesome
-                                    Width="15"
-                                    Height="15"
-                                    Foreground="#EBA5BB"
-                                    Icon="Tags" />
-                                <ComboBox
-                                    Name="CategoryComboBox"
-                                    Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    DisplayMemberPath="CategoryName"
-                                    Style="{StaticResource comboBoxStyle}" />
-
-                                <Button x:Name="AddCategory"
-                                        Grid.Column="2"
-                                        Margin="5,0,0,0"
-                                        Style="{StaticResource addCategoryButtonStyle}" Click="AddCategory_Click">
-                                    <fa:ImageAwesome
-                                        Width="18"
-                                        Height="18"
-                                        Foreground="White"
-                                        Icon="PlusCircle" />
-                                </Button>
-                                <Popup x:Name="AddCategoryPopup" AllowsTransparency="True" Placement="Mouse" StaysOpen="False">
-                                    <Border Background="White" BorderBrush="Black" BorderThickness="1" CornerRadius="5" Padding="10">
-                                        <uc:AddCategoryModal />
-                                    </Border>
-                                </Popup>
-                            </Grid>
-                        </StackPanel>
-
-                        <!--  Add Task Button  -->
-                        <Button
-                            x:Name="AddTask"
-                            Grid.Column="1"
-                            Click="AddTask_Click"
-                            Style="{StaticResource button}">
-                            <fa:ImageAwesome
-                                Width="28"
-                                Height="28"
-                                Foreground="#f9f9f9"
-                                Icon="PlusCircle" />
-                        </Button>
-                    </Grid>
-                </Border>
-
+                <!--  Popup for Add Task  -->
+                <Popup
+                    x:Name="AddTaskPopup"
+                    AllowsTransparency="True"
+                    IsOpen="False"
+                    Placement="Mouse"
+                    StaysOpen="False">
+                    <Border
+                        Padding="10"
+                        Background="White"
+                        BorderBrush="Black"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <uc:AddTaskUserControl />
+                    </Border>
+                </Popup>
                 <!--  Motes  -->
-                <StackPanel Height="172">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" Height="172">
-                        <ItemsControl x:Name="TaskItemSouce" ItemsSource="{Binding Tasks}">
-                            <ItemsControl.ItemTemplate>
+                <StackPanel Height="370">
+                    <ScrollViewer Height="370" VerticalScrollBarVisibility="Auto">
+                        <ListBox
+                            x:Name="TaskListBox"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemsSource="{Binding Tasks}"
+                            SelectionChanged="TaskListBox_SelectionChanged">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <uc:Item
                                         Title="{Binding Title}"
@@ -307,8 +149,8 @@
                                         Time="{Binding Path=DueDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
                                         Color="#eba5bb" />
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </ScrollViewer>
                 </StackPanel>
             </StackPanel>
