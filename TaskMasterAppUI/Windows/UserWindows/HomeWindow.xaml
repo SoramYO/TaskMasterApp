@@ -18,6 +18,7 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+
     <Window.Resources>
         <local:TimeRangeConverter x:Key="TimeRangeConverter" />
         <local:IsCompletedToIconConverter x:Key="IsCompletedToIconConverter" />
@@ -71,10 +72,9 @@
                     CalendarItemStyle="{DynamicResource CalendarCalendarItemStyle2}"
                     SelectedDatesChanged="CalendarChoose_SelectedDatesChanged"
                     Style="{DynamicResource CalendarStyle1}" />
-
             </StackPanel>
-            <StackPanel Grid.Column="1">
 
+            <StackPanel Grid.Column="1">
                 <!--  Titles  -->
                 <StackPanel Margin="30,45,30,10" Orientation="Horizontal">
                     <TextBlock
@@ -95,14 +95,13 @@
                             FontSize="14"
                             Foreground="#EBA5BB" />
                     </StackPanel>
-
                 </StackPanel>
 
-                <TextBlock
-                    Margin="35,0,20,0"
-                    FontSize="16"
-                    Foreground="#EBA5BB"
-                    Text="5 tasks- 2 dates left" />
+                <TextBlock x:Name="TaskCountTextBlock"
+                           Margin="35,0,20,0"
+                           FontSize="16"
+                           Foreground="#EBA5BB"
+                           Text="5 tasks - 2 dates left" />
 
                 <!--  Add Notes  -->
                 <Button
@@ -132,6 +131,7 @@
                         <uc:AddTaskUserControl />
                     </Border>
                 </Popup>
+
                 <!--  Motes  -->
                 <StackPanel Height="370">
                     <ScrollViewer Height="370" VerticalScrollBarVisibility="Auto">
@@ -156,6 +156,15 @@
                     </ScrollViewer>
                 </StackPanel>
             </StackPanel>
+
+            <Button Width="40" Height="40"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,20,20,0"
+                    Background="Transparent"
+                    Click="CogButton_Click">
+                <fa:ImageAwesome Icon="Cog" />
+            </Button>
         </Grid>
     </Grid>
 </Window>

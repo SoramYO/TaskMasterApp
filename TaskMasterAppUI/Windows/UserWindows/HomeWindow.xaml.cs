@@ -1,10 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Windows.Input;
 using TaskMasterAppBLL.Service.Implement;
 using TaskMasterAppBLL.Service.Interface;
 using TaskModel = TaskMasterAppDAL.Models.Task;
+using System.Media;
+using System.Security.Claims;
 namespace TaskMasterAppUI.Windows.UserWindows
 {
     /// <summary>
@@ -16,6 +19,8 @@ namespace TaskMasterAppUI.Windows.UserWindows
         private ITaskService _taskService = new TaskService();
         public ObservableCollection<TaskModel> Tasks { get; set; }
         public bool IsAddTaskPopupOpen { get; set; }
+        private DispatcherTimer timer;
+        private DateTime alarmTime;
         public HomeWindow()
         {
             InitializeComponent();
@@ -126,7 +131,46 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 LoadData();
             }
         }
+        private void SetupTimer()
+        {
+            // Khởi tạo DispatcherTimer để kiểm tra mỗi giây
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1); // Kiểm tra mỗi giây
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
 
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            DateTime currentTime = DateTime.Now;
+            foreach (var task in Tasks)
+            {
+                var taskTime = task.DueDate;
+                if (taskTime.HasValue)
+                {
+                    if (currentTime.Hour == taskTime.Value.Hour && currentTime.Minute == taskTime.Value.Minute && currentTime.Second == taskTime.Value.Second)
+                    {
+                        TriggerAlarm(task.Title);
+                    }
+                }
+            }
 
+        }
+        private void TriggerAlarm(string value)
+        {
+            PlaySound(@"C:\path_to_your_audio_file.wav");
+            MessageBox.Show($"Báo thức {value} đến giờ!");
+        }
+
+        private void PlaySound(string filePath)
+        {
+            SoundPlayer player = new SoundPlayer(filePath);
+            player.Play();
+        }
+
+        private void CogButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
