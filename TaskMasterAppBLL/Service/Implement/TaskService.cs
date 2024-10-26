@@ -1,4 +1,5 @@
 ﻿using TaskMasterAppBLL.Service.Interface;
+using TaskMasterAppDAL.Models;
 using TaskMasterAppDAL.Repository.Implement;
 using TaskModel = TaskMasterAppDAL.Models.Task;
 namespace TaskMasterAppBLL.Service.Implement
@@ -46,6 +47,16 @@ namespace TaskMasterAppBLL.Service.Implement
         {
             task.Notification = !task.Notification;
             _repository.Update(task);
+        }
+
+        public List<TaskModel> TaskByCategory(Category category)
+        {
+            return GetTasks().Where(t => t.CategoryId == category.CategoryId).ToList();
+        }
+
+        public List<TaskModel> GetTasksByUserId(int userId)
+        {
+            return GetTasks().Where(t => t.UserId == userId).ToList();
         }
     }
 }

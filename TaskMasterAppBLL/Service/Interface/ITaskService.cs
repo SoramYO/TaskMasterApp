@@ -1,4 +1,5 @@
-﻿using TaskModel = TaskMasterAppDAL.Models.Task;
+﻿using TaskMasterAppDAL.Models;
+using TaskModel = TaskMasterAppDAL.Models.Task;
 namespace TaskMasterAppBLL.Service.Interface
 {
     public interface ITaskService
@@ -15,5 +16,8 @@ namespace TaskMasterAppBLL.Service.Interface
         void DeleteTask(TaskModel task);
         void CheckTask(TaskModel task);
         void MuteTask(TaskModel task);
+
+        List<TaskModel> TaskByCategory(Category category);
+        List<TaskModel> GetTasksByUserId(int userId);
     }
 }

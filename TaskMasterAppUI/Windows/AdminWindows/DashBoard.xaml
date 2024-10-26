@@ -2,12 +2,69 @@
     x:Class="TaskMasterAppUI.Windows.AdminWindows.DashBoard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:TaskMasterAppUI.Windows.AdminWindows"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="DashBoard"
+    Title="Dashboard"
     Width="800"
     Height="450"
-    mc:Ignorable="d">
-    <Grid />
+    WindowStartupLocation="CenterScreen"
+    >
+
+    <Grid Background="#F5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Text="Dashboard"
+            FontSize="24"
+            FontWeight="Bold"
+            HorizontalAlignment="Center"
+            Margin="20"/>
+
+        <StackPanel Grid.Row="1"
+                    Margin="20">
+            <Border Background="White"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,10,0,0">
+                <StackPanel>
+                    <TextBlock Text="Tổng Số Người Dùng"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+                    <TextBlock x:Name="TotalUsersTextBlock"
+                               FontSize="24"
+                               Foreground="#2196F3"/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="White"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,10,0,0">
+                <StackPanel>
+                    <TextBlock Text="Xếp Hạng Người Dùng"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+                    <ListView x:Name="UserRankingListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Tên Người Dùng"
+                                                Width="200"
+                                                DisplayMemberBinding="{Binding Email}"/>
+                                <GridViewColumn Header="Số Task"
+                                                Width="100"
+                                                DisplayMemberBinding="{Binding TaskCount}"/>
+                                <GridViewColumn Header="Task Đã Hoàn Thành"
+                                                Width="150"
+                                                DisplayMemberBinding="{Binding CompletedTaskCount}"/>
+                                <GridViewColumn Header="Task Chưa Hoàn Thành"
+                                                Width="150"
+                                                DisplayMemberBinding="{Binding IncompleteTaskCount}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
 </Window>

@@ -20,7 +20,7 @@
             Height="20"
             Margin="0,3,0,0"
             VerticalAlignment="Top"
-            Foreground="#f1f1f1"
+            Foreground="Black"
             Icon="{Binding Path=Icon, ElementName=item}" />
 
         <StackPanel Grid.Column="1" Margin="10,0">
