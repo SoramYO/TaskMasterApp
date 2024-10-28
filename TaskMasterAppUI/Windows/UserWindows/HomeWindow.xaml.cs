@@ -357,5 +357,9 @@ namespace TaskMasterAppUI.Windows.UserWindows
             }
         }
 
+        private void StopPreviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Stop();
+        }
     }
 }
