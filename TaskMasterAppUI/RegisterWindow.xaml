@@ -142,7 +142,7 @@
                     <Image
                         Width="218"
                         Height="118"
-                        Source="Images/logo.png" />
+                         Source="pack://application:,,,/Images/logo.png" />
 
                     <TextBlock
                         HorizontalAlignment="Center"

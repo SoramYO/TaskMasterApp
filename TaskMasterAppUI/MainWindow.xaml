@@ -9,7 +9,6 @@
     Width="800"
     Height="550"
     AllowsTransparency="True"
-    Background="Transparent"
     MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
@@ -147,7 +146,7 @@
                     <Image
                         Width="218"
                         Height="118"
-                        Source="Images/logo.png" />
+                        Source="pack://application:,,,/Images/logo.png" />
 
                     <TextBlock
                         HorizontalAlignment="Center"
