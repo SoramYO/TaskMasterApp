@@ -56,6 +56,7 @@ namespace TaskMasterAppUI.Windows.UserControls
                 Title = TitleTextBox.Text,
                 Description = DescriptionTextBox.Text,
                 DueDate = EndDateTimePicker.Value,
+                Notification = true,
                 CreatedDate = StartDateTimePicker.Value,
                 CategoryId = (int)CategoryComboBox.SelectedValue,
                 UserId = Application.Current.Properties["UserId"] as int?

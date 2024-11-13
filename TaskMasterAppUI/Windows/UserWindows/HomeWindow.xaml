@@ -37,13 +37,14 @@
                 Grid.Column="1"
                 Background="#c73f69"
                 CornerRadius="0 20 20 0"
-                MouseDown="Border_MouseDown" >
-                <TextBlock x:Name="TimeLabel"
-                           FontSize="16"
-                           Foreground="Black"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Top"
-                           Margin="0,20,20,0" />
+                MouseDown="Border_MouseDown">
+                <TextBlock
+                    x:Name="TimeLabel"
+                    Margin="0,20,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    FontSize="16"
+                    Foreground="Black" />
             </Border>
         </Grid>
         <!--  Grid Control  -->
@@ -104,11 +105,11 @@
                     </StackPanel>
                 </StackPanel>
 
-                <TextBlock x:Name="TaskCountTextBlock"
-                           Margin="35,0,20,0"
-                           FontSize="16"
-                           Foreground="#EBA5BB"
-                           />
+                <TextBlock
+                    x:Name="TaskCountTextBlock"
+                    Margin="35,0,20,0"
+                    FontSize="16"
+                    Foreground="#EBA5BB" />
 
                 <!--  Add Notes  -->
                 <Button
@@ -121,6 +122,7 @@
                     Click="AddTaskButton_Click"
                     Content="Add Task"
                     Style="{Binding ButtonStyle}" />
+
 
                 <!--  Popup for Add Task  -->
                 <Popup
@@ -140,34 +142,43 @@
                 </Popup>
 
                 <!--  Category Filter  -->
-                <ComboBox x:Name="CategoryFilterComboBox"
-                          Width="200"
-                          Margin="20"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Top"
-                          SelectionChanged="CategoryFilterComboBox_SelectionChanged">
+                <ComboBox
+                    x:Name="CategoryFilterComboBox"
+                    Width="200"
+                    Margin="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    SelectionChanged="CategoryFilterComboBox_SelectionChanged">
                     <ComboBoxItem Content="All Categories" />
                 </ComboBox>
+                <Button
+                    x:Name="ClearFilterButton"
+                    Width="70"
+                    Height="20"
+                    Click="ClearFilterButton_Click"
+                    Content="Clear Filter"
+                    Style="{Binding ButtonStyle}" />
+
 
                 <!--  Motes  -->
                 <StackPanel>
-                    <ScrollViewer  VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ListBox
                             x:Name="TaskListBox"
+                            Height="300"
                             Background="White"
                             BorderThickness="0"
                             ItemsSource="{Binding Tasks}"
-                            Height="380"
                             MouseDoubleClick="TaskListBox_MouseDoubleClick"
                             PreviewMouseLeftButtonDown="TaskListBox_PreviewMouseLeftButtonDown">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <uc:Item
                                         Title="{Binding Title}"
-                                        Icon="{Binding IsCompleted, Converter={StaticResource IsCompletedToIconConverter}}"
-                                        IconBell="{Binding Notification, Converter={StaticResource IsNotificationToIconConvert}}"
                                         CreateTime="{Binding Path=CreatedDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
                                         DueTime="{Binding Path=DueDate, StringFormat='{}{0:HH:mm dd/MM/yyyy}', Converter={StaticResource TimeRangeConverter}}"
+                                        Icon="{Binding IsCompleted, Converter={StaticResource IsCompletedToIconConverter}}"
+                                        IconBell="{Binding Notification, Converter={StaticResource IsNotificationToIconConvert}}"
                                         Color="Black" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -176,21 +187,108 @@
                 </StackPanel>
             </StackPanel>
 
-            <Button Width="40" Height="40"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Margin="0,20,20,0"
-                    Background="Transparent"
-                    Click="CogButton_Click"
-                    ContextMenuOpening="Button_ContextMenuOpening">
+            <Button
+                Width="40"
+                Height="40"
+                Margin="0,20,20,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Click="CogButton_Click"
+                ContextMenuOpening="Button_ContextMenuOpening">
                 <fa:ImageAwesome Icon="Cog" />
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Chọn Nhạc Chuông" Click="SelectSoundButton_Click" />
-                        <StackPanel Orientation="Vertical" Margin="10">
-                            <ComboBox x:Name="RingtoneComboBox" Width="200" Height="30" SelectionChanged="RingtoneComboBox_SelectionChanged" />
-                            <Button x:Name="PreviewButton" Content="Nghe thử" Width="80" Height="30" Margin="0,10,0,0" Click="PreviewButton_Click" />
-                            <Button x:Name="StopPreviewButton" Content="Dung Nghe thử" Width="120" Height="30" Margin="0,10,0,0" Click="StopPreviewButton_Click" />
+                        <ContextMenu.Resources>
+                            <!--  Style cho MenuItem  -->
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Height" Value="105" />
+                                <Setter Property="Padding" Value="8,0" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                            <!--  Style cho Button  -->
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#2196F3" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="32" />
+                                <Setter Property="Cursor" Value="Hand" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#1976D2" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            <!--  Style cho ComboBox  -->
+                            <Style TargetType="ComboBox">
+                                <Setter Property="Height" Value="32" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderBrush" Value="#E0E0E0" />
+                                <Setter Property="Padding" Value="8,5" />
+                            </Style>
+                        </ContextMenu.Resources>
+
+                        <MenuItem Click="SelectSoundButton_Click" Header="Chọn Nhạc Chuông">
+                            <MenuItem.Icon>
+                                <Path
+                                    Width="16"
+                                    Height="16"
+                                    Data="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17S7.79 21 10 21 14 19.21 14 17V7H18V3H12ZM10 19C8.9 19 8 18.1 8 17S8.9 15 10 15 12 15.9 12 17 11.1 19 10 19Z"
+                                    Fill="#2196F3"
+                                    Stretch="Uniform" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator Margin="0,5" />
+
+                        <StackPanel Margin="10">
+                            <ComboBox
+                                x:Name="RingtoneComboBox"
+                                Width="250"
+                                Margin="0,0,0,12"
+                                SelectionChanged="RingtoneComboBox_SelectionChanged" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="8" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    x:Name="PreviewButton"
+                                    Grid.Column="0"
+                                    Click="PreviewButton_Click"
+                                    Content="Nghe thử">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="4" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                                <Button
+                                    x:Name="StopPreviewButton"
+                                    Grid.Column="2"
+                                    Background="#F44336"
+                                    Click="StopPreviewButton_Click"
+                                    Content="Dừng phát">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="4" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
                         </StackPanel>
                     </ContextMenu>
                 </Button.ContextMenu>

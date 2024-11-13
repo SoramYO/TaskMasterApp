@@ -1,20 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 using TaskMasterAppBLL.Service.Implement;
 using TaskMasterAppBLL.Service.Interface;
-using TaskModel = TaskMasterAppDAL.Models.Task;
-using System.Media;
-using System.Security.Claims;
-using System.Windows.Media;
 using TaskMasterAppDAL.Models;
-using Microsoft.Win32;
-using System.IO;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
-
+using TaskMasterAppUI.Windows.UserControls;
+using Forms = System.Windows.Forms;
+using TaskModel = TaskMasterAppDAL.Models.Task;
 namespace TaskMasterAppUI.Windows.UserWindows
 {
     /// <summary>
@@ -34,7 +35,11 @@ namespace TaskMasterAppUI.Windows.UserWindows
         private readonly string ringtoneFilePath = "ringtoneList.json";
         private MediaPlayer mediaPlayer = new MediaPlayer();
         private string selectedSoundFilePath;
+        private Forms.NotifyIcon notifyIcon;
+        private bool allowClose = false;
+        // Khởi tạo NotifyIcon
 
+        private AddTaskUserControl addTaskUserControl;
         public HomeWindow()
         {
             InitializeComponent();
@@ -43,7 +48,52 @@ namespace TaskMasterAppUI.Windows.UserWindows
             TaskListBox.ItemsSource = Tasks;
             IsAddTaskPopupOpen = false;
 
+
+
             LoadCategories();
+
+            try
+            {
+                notifyIcon = new Forms.NotifyIcon();
+                notifyIcon.Icon = new System.Drawing.Icon("Images/logo.ico");
+                notifyIcon.Text = "Task Master";
+                notifyIcon.Visible = true;
+
+                // Tạo context menu cho NotifyIcon
+                var contextMenu = new Forms.ContextMenuStrip();
+                var openItem = new Forms.ToolStripMenuItem("Mở ứng dụng");
+                var exitItem = new Forms.ToolStripMenuItem("Thoát");
+
+                openItem.Click += (s, e) =>
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                    this.Activate(); // Đảm bảo cửa sổ được focus
+                };
+
+                exitItem.Click += (s, e) =>
+                {
+                    allowClose = true;
+                    System.Windows.Application.Current.Shutdown();
+                };
+
+                contextMenu.Items.Add(openItem);
+                contextMenu.Items.Add(exitItem);
+
+                notifyIcon.ContextMenuStrip = contextMenu;
+                notifyIcon.DoubleClick += (s, e) =>
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                    this.Activate(); // Đảm bảo cửa sổ được focus
+                };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tạo NotifyIcon: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
         }
 
         private void LoadCategories()
@@ -57,8 +107,8 @@ namespace TaskMasterAppUI.Windows.UserWindows
 
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            AddTaskPopup.IsOpen = !AddTaskPopup.IsOpen;
-            if (!AddTaskPopup.IsOpen)
+            AddTaskPopup.IsOpen = true;
+            if (AddTaskPopup.IsOpen == false)
             {
                 LoadData();
             }
@@ -73,9 +123,52 @@ namespace TaskMasterAppUI.Windows.UserWindows
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
-            Close();
+            Hide();
+        }
+        private void OpenApp_Click(object sender, RoutedEventArgs e)
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+            this.Activate();
+        }
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            this.Closing += Window_Closing;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (!allowClose)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+            else
+            {
+                notifyIcon.Dispose();
+            }
+        }
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+            }
+            base.OnStateChanged(e);
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!allowClose)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
+            else
+            {
+                notifyIcon.Dispose();
+            }
+            base.OnClosing(e);
         }
 
         private void CalendarChoose_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
@@ -110,12 +203,32 @@ namespace TaskMasterAppUI.Windows.UserWindows
         }
         private void LoadRingtoneList()
         {
-            if (File.Exists(ringtoneFilePath))
+            try
             {
-                ringtoneList = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(ringtoneFilePath)) ?? new List<string>();
-            }
+                if (File.Exists(ringtoneFilePath))
+                {
+                    string jsonContent = File.ReadAllText(ringtoneFilePath);
+                    ringtoneList = JsonConvert.DeserializeObject<List<string>>(jsonContent) ?? new List<string>();
 
-            RingtoneComboBox.ItemsSource = ringtoneList;
+                    // Kiểm tra và loại bỏ các file không tồn tại
+                    ringtoneList = ringtoneList.Where(path => File.Exists(path)).ToList();
+
+                    // Lưu lại danh sách sau khi đã lọc
+                    SaveRingtoneList();
+                }
+                else
+                {
+                    ringtoneList = new List<string>();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải danh sách nhạc chuông: {ex.Message}",
+                               "Lỗi",
+                               MessageBoxButton.OK,
+                               MessageBoxImage.Error);
+                ringtoneList = new List<string>();
+            }
         }
 
 
@@ -199,31 +312,112 @@ namespace TaskMasterAppUI.Windows.UserWindows
             TaskCountTextBlock.Text = $"Tổng: {Tasks.Count} - Quá hạn: {overdueCount}";
         }
 
-        private void TriggerAlarm(string value)
+        private void TriggerAlarm(string taskTitle)
         {
-            PlaySound(@"C:\Users\ngoxu\Downloads\nhac.wav");
-            MessageBox.Show($"Báo thức {value} đến giờ!");
-            StopSound();
+            try
+            {
+                // Sử dụng file nhạc đã chọn
+                string soundToPlay = selectedSoundFilePath;
+
+                // Nếu chưa chọn nhạc, kiểm tra trong RingtoneComboBox
+                if (string.IsNullOrEmpty(soundToPlay) && RingtoneComboBox.SelectedItem != null)
+                {
+                    soundToPlay = RingtoneComboBox.SelectedItem.ToString();
+                }
+
+                // Kiểm tra xem file có tồn tại không
+                if (!string.IsNullOrEmpty(soundToPlay) && File.Exists(soundToPlay))
+                {
+                    PlaySound(soundToPlay);
+                }
+                else
+                {
+                    // Nếu không có file nhạc nào được chọn, dùng âm thanh mặc định của Windows
+                    System.Media.SystemSounds.Exclamation.Play();
+                }
+
+                // Hiển thị thông báo
+                notifyIcon.ShowBalloonTip(
+                    3000, // Thời gian hiển thị (milliseconds)
+                    "Task Master",
+                    $"Đã đến giờ thực hiện nhiệm vụ: {taskTitle}",
+                    Forms.ToolTipIcon.Info
+                );
+
+                // Hiện cửa sổ lên nếu đang ẩn
+                if (!this.IsVisible)
+                {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                    this.Activate(); // Đảm bảo cửa sổ được focus
+                }
+
+                // Hiển thị MessageBox
+                MessageBox.Show($"Báo thức {taskTitle} đến giờ!", "Task Master",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                StopSound();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi phát âm thanh: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                // Nếu có lỗi, vẫn hiển thị thông báo nhưng dùng âm thanh mặc định
+                System.Media.SystemSounds.Exclamation.Play();
+            }
         }
 
         private void PlaySound(string filePath)
         {
-            if (player != null)
+            try
             {
-                player.Stop();
-                player.Dispose();
+                if (player != null)
+                {
+                    player.Stop();
+                    player.Dispose();
+                }
+
+                // Kiểm tra phần mở rộng của file
+                string extension = Path.GetExtension(filePath).ToLower();
+
+                if (extension == ".wav")
+                {
+                    // Sử dụng SoundPlayer cho file .wav
+                    player = new SoundPlayer(filePath);
+                    player.PlayLooping();
+                }
+                else if (extension == ".mp3" || extension == ".m4a" || extension == ".aac")
+                {
+                    // Sử dụng MediaPlayer cho các định dạng khác
+                    mediaPlayer.Open(new Uri(filePath));
+                    mediaPlayer.MediaEnded += (s, e) => mediaPlayer.Position = TimeSpan.Zero; // Loop
+                    mediaPlayer.Play();
+                }
             }
-            player = new SoundPlayer(filePath);
-            player.PlayLooping();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi phát âm thanh: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Media.SystemSounds.Exclamation.Play();
+            }
         }
 
         private void StopSound()
         {
+            // Dừng SoundPlayer nếu đang chạy
             if (player != null)
             {
                 player.Stop();
                 player.Dispose();
                 player = null;
+            }
+
+            // Dừng MediaPlayer nếu đang chạy
+            if (mediaPlayer != null)
+            {
+                mediaPlayer.Stop();
+                mediaPlayer.Close();
             }
         }
 
@@ -296,9 +490,48 @@ namespace TaskMasterAppUI.Windows.UserWindows
         }
         private void Button_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (alarmSoundFilePath == null) // Chỉ chặn nếu không có file âm thanh nào
+            // Load danh sách nhạc chuông khi mở ContextMenu
+            LoadRingtoneList();
+
+            // Nếu danh sách rỗng thì hiển thị thông báo
+            if (ringtoneList.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn một tệp âm thanh trước.");
+                RingtoneComboBox.ItemsSource = new List<string> { "Chưa có nhạc chuông" };
+                RingtoneComboBox.IsEnabled = false;
+                PreviewButton.IsEnabled = false;
+                StopPreviewButton.IsEnabled = false;
+            }
+            else
+            {
+                RingtoneComboBox.ItemsSource = ringtoneList;
+                RingtoneComboBox.IsEnabled = true;
+                PreviewButton.IsEnabled = true;
+                StopPreviewButton.IsEnabled = true;
+
+                // Hiển thị tên file thay vì đường dẫn đầy đủ
+                RingtoneComboBox.ItemTemplate = new DataTemplate();
+                var textBlock = new FrameworkElementFactory(typeof(TextBlock));
+                textBlock.SetBinding(TextBlock.TextProperty, new System.Windows.Data.Binding
+                {
+                    Converter = new PathToFileNameConverter()
+                });
+                RingtoneComboBox.ItemTemplate.VisualTree = textBlock;
+            }
+        }
+        public class PathToFileNameConverter : IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                if (value is string path)
+                {
+                    return Path.GetFileName(path);
+                }
+                return value;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -320,6 +553,11 @@ namespace TaskMasterAppUI.Windows.UserWindows
                 {
                     ringtoneList.Add(alarmSoundFilePath);
                     SaveRingtoneList(); // Lưu vào file JSON
+
+                    // Cập nhật lại ItemsSource của ComboBox
+                    RingtoneComboBox.ItemsSource = null;
+                    RingtoneComboBox.ItemsSource = ringtoneList;
+                    RingtoneComboBox.SelectedItem = alarmSoundFilePath; // Tự động chọn file vừa thêm
                 }
 
                 MessageBox.Show("Chọn thành công", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -361,5 +599,11 @@ namespace TaskMasterAppUI.Windows.UserWindows
         {
             mediaPlayer.Stop();
         }
+
+        private void ClearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadData();
+        }
+
     }
 }
