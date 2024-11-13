@@ -28,7 +28,10 @@ namespace TaskMasterAppUI.Windows.AdminWindows
             var userRanking = _userService.GetAllUsers()
             .Select(user => new
             {
-                Email = user.UserName,
+                UserName = user.UserName,
+                Email = user.Email,
+                RoleId = user.RoleId,
+                Password = user.PasswordHash,
                 TaskCount = _taskService.GetTasksByUserId(user.UserId).Count(),
                 IncompleteTaskCount = _taskService.GetTasksByUserId(user.UserId).Count(t => !(bool)t.IsCompleted),
                 CompletedTaskCount = _taskService.GetTasksByUserId(user.UserId).Count(t => (bool)t.IsCompleted)
@@ -38,6 +41,30 @@ namespace TaskMasterAppUI.Windows.AdminWindows
                             .ToList();
 
             UserRankingListView.ItemsSource = userRanking;
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            UserDetail userDetail = new UserDetail();
+            userDetail.ShowDialog();
+            LoadDashboardData();
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserRankingListView.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a user to update");
+                return;
+            }
+
+            var user = UserRankingListView.SelectedItem;
+            UserDetail userDetail = new UserDetail();
+            userDetail.email = user.GetType().GetProperty("Email").GetValue(user, null).ToString();
+            userDetail.ShowDialog();
+            LoadDashboardData();
+
+
         }
     }
 }

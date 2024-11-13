@@ -103,8 +103,8 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
             <Style x:Key="textBox" TargetType="TextBox">
-                <Setter Property="Background" Value="#CD5278" />
-                <Setter Property="Foreground" Value="#EBA5BB" />
+                <Setter Property="Background" Value="#388B3C" />
+                <Setter Property="Foreground" Value="#45a049" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Grid.Column" Value="1" />
                 <Setter Property="Margin" Value="10,0,0,0" />
@@ -427,7 +427,7 @@
                             <Grid>
                                 <Rectangle
                                     x:Name="TodayBackground"
-                                    Fill="#C73F69"
+                                    Fill="#388E3C"
                                     Opacity="0"
                                     RadiusX="30"
                                     RadiusY="30" />

@@ -10,6 +10,11 @@ namespace TaskMasterAppBLL.Service.Interface
     public interface IUserService
     {
         List<User> GetAllUsers();
+        void AddUser(User user);
+        void UpdateUser(User user);
 
+        User GetByUserName(string username);
+
+        User GetUserById(int userId);
     }
 }

@@ -18,5 +18,30 @@ namespace TaskMasterAppBLL.Service.Implement
             return _repository.GetAll();
         }
 
+        public void AddUser(User user)
+        {
+            _repository.Add(user);
+        }
+
+        public void UpdateUser(User user)
+        {
+            var existingUser = GetUserById(user.UserId);
+            existingUser.UserName = user.UserName;
+            existingUser.Email = user.Email;
+            existingUser.PasswordHash = user.PasswordHash;
+            existingUser.RoleId = user.RoleId;
+            _repository.Update(existingUser);
+        }
+
+        public User GetByUserName(string username)
+        {
+            return _repository.GetAll().FirstOrDefault(x => x.UserName == username);
+        }
+
+        public User GetUserById(int userId)
+        {
+            return _repository.GetById(userId);
+        }
+
     }
 }

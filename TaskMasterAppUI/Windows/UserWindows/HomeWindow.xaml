@@ -35,7 +35,7 @@
             <Border Background="#fefefe" CornerRadius="20 0 0 20" />
             <Border
                 Grid.Column="1"
-                Background="#c73f69"
+                Background="#388E3C"
                 CornerRadius="0 20 20 0"
                 MouseDown="Border_MouseDown">
                 <TextBlock

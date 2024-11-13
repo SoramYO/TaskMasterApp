@@ -14,7 +14,7 @@
         Width="355"
         Padding="17,15,5,15"
         HorizontalAlignment="Center"
-        Background="#CD5278"
+        Background="#45a049"
         CornerRadius="10">
 
         <Grid>

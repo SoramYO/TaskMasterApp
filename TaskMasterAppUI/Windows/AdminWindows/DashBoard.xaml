@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Dashboard"
     Width="800"
-    Height="450"
+    Height="600"
     WindowStartupLocation="CenterScreen"
     >
 
@@ -65,6 +65,10 @@
                     </ListView>
                 </StackPanel>
             </Border>
+
+            <Button x:Name="CreateButton" Content="Create" Height="35" Width="112" Click="CreateButton_Click" Style="{StaticResource ButtonStyle}"/>
+            <Button x:Name="UpdateButton" Content="Update" Height="35" Width="112" Click="UpdateButton_Click" Style="{StaticResource ButtonStyle}"/>
+
         </StackPanel>
     </Grid>
 </Window>
